@@ -10,10 +10,21 @@ namespace Super_Mario
 {
     abstract class Entity : GameObject
     {
+        public enum AnimationState
+        {
+            Idle,
+            Moving,
+            Jumping,
+            Sliding,
+            Dead
+        }
         protected int speed;
         protected bool isGrounded;
 
-
+        protected AnimationState animState = AnimationState.Idle;
+        protected int frame = 0;
+        protected float frameInterval = 0.1f;  // Animation speed
+        protected double frameTimer = 0;
 
 
         public Entity(Rectangle bounds, Texture2D texture) : base(bounds, texture)

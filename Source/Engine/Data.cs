@@ -17,7 +17,7 @@ namespace Super_Mario
 
         public static int TileSize = 32;
 
-        public static bool Debug = true;
+        public static bool Debug = false;
 
         public static GraphicsDeviceManager graphics;
 
@@ -28,11 +28,7 @@ namespace Super_Mario
             graphics.PreferredBackBufferHeight = ScreenH;
             graphics.ApplyChanges();
         }
-        // Math functions
-        public static int Round(float value)
-        {
-            return (int)MathF.Round(value);
-        }
+        // Useful Math Functions
         public static float Approach(float current, float target, float increase)
         {
             if (current < target)

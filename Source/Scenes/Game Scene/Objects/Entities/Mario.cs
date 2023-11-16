@@ -23,7 +23,7 @@ namespace Super_Mario
         public float Gravity = 13.4f; // 13.0f
         public float Acceleration = 10.2f; // 2.0f
 
-        public float Deacceleration = 22.0f; // 22.0f
+        public float Deacceleration = 12.0f; // 22.0f
         public float AirDecceleration= 12.0f; // 12.0f
 
         public float MaxFallSpeed = 20.5f; // 4f
@@ -31,12 +31,14 @@ namespace Super_Mario
 
         private Vector2 remainder = new Vector2(0, 0);
 
+        SpriteEffects spriteEffect;
 
         private Controller controller;
 
         public Mario(Rectangle bounds, Texture2D texture) : base(bounds, texture)
         {
             controller = new Controller(this);
+            spriteEffect = SpriteEffects.None;
         }
         public override void Create()
         {
@@ -49,14 +51,56 @@ namespace Super_Mario
             controller.Update();
             // Update delta time
             dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Debug.Print(isGrounded.ToString());
+            SpriteHandler();
+            AnimationHandler();
             Movement();
             MoveX(hSpeed, OnCollide);
             MoveY(vSpeed, OnCollide);
             base.Update(gameTime);
+            Debug.Print(hSpeed.ToString());
 
         }
+        private void AnimationHandler()
+        {
+            switch ((int)animState)
+            {
+                case 0:
+                    frame = 0;
+                    break;
+                case 1:
+                    frameTimer -= dt;
+                    // If enough time has passed for the next frame
+                    if (frameTimer <= 0)
+                    {
+                        frameTimer = frameInterval;
+                        frame++;
+                        if (frame > 3)
+                        {
+                            frame = 1;
+                        }
+                    }
+                    break;
+                case 2:
+                    frame = 5;
+                    break;
+                case 3:
+                    frame = 4;
+                    break;
+            }
+        }
+        private void SpriteHandler()
+        {
+            // Facing the Player in the right direction
+            if (hSpeed > 0)
+            {
+                spriteEffect = SpriteEffects.None;
+            }
+            if (hSpeed < 0)
+            {
+                spriteEffect = SpriteEffects.FlipHorizontally;
 
+            }
+        }
         private void Movement()
         {
             // Jump
@@ -67,8 +111,16 @@ namespace Super_Mario
                 //vSpeed += player.solidSpeed.y;
                 isGrounded = false;
             }
+            if (!isGrounded)
+            {
+                animState = AnimationState.Jumping;
+            }
             if (KeyStatesManager.KeyHeld(Keys.A))
             {
+                if (isGrounded)
+                {
+                    animState = AnimationState.Moving;
+                }
                 float multi = 1.0f;
                 if ( hSpeed > 0.0f)
                 {
@@ -78,6 +130,10 @@ namespace Super_Mario
             }
             if (KeyStatesManager.KeyHeld(Keys.D))
             {
+                if (isGrounded)
+                {
+                    animState = AnimationState.Moving;
+                }
                 float multi = 1.0f;
                 if (hSpeed < 0.0f)
                 {
@@ -92,15 +148,36 @@ namespace Super_Mario
                 if (isGrounded)
                 {
                     hSpeed = Data.Approach(hSpeed, 0, Deacceleration * dt);
+                    animState = AnimationState.Idle;
                 }
                 else
                 {
                     hSpeed = Data.Approach(hSpeed, 0, AirDecceleration * dt);
                 }
             }
+            if ((KeyStatesManager.KeyHeld(Keys.A) && !KeyStatesManager.KeyHeld(Keys.D)))
+            {
+                if (isGrounded)
+                {
+                    if (hSpeed > -1)
+                    {
+                        animState = AnimationState.Sliding;
+                    }
+                }
+            }
+            if ((!KeyStatesManager.KeyHeld(Keys.A) && KeyStatesManager.KeyHeld(Keys.D)))
+            {
+                if (isGrounded)
+                {
+                    if (hSpeed < 1)
+                    {
+                        animState = AnimationState.Sliding;
+                    }
+                }
+            }
 
-            // Gravity
-            vSpeed = Data.Approach(vSpeed, MaxFallSpeed, Gravity * dt); 
+                // Gravity
+                vSpeed = Data.Approach(vSpeed, MaxFallSpeed, Gravity * dt); 
 
             position.X = Math.Clamp(position.X, 0, Data.WorldW - width);
             position.Y = Math.Clamp(position.Y, 0, Data.WorldH - height * 2f);
@@ -175,6 +252,8 @@ namespace Super_Mario
                                 {
                                     isGrounded = true;
                                 }
+                                else if (bounds.Bottom > solidRect.Bottom)
+                                    solid.isBouncing = true;
                                 vSpeed = 0;
                                 return;
                             }
@@ -194,7 +273,7 @@ namespace Super_Mario
         }
         public override void Draw(SpriteBatch sb)
         {
-            base.Draw(sb);
+            sb.Draw(texture, position, new Rectangle(frame * Data.TileSize, 0, Data.TileSize, Data.TileSize), Color.White, 0, Vector2.Zero, 1f, spriteEffect, 0);
         }
         public void DrawDebug(SpriteBatch sb)
         {

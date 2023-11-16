@@ -30,6 +30,7 @@ namespace Super_Mario
             camera.SetPosition(player.GetPosition()); // Update camera position
 
             player.Update(gameTime); // Update player object
+            foreach (Platform platform in platforms) { platform.Update(gameTime);}
         }
         internal override void Draw(SpriteBatch spriteBatch)
         {
