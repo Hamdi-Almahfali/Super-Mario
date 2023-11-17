@@ -16,9 +16,6 @@ namespace Super_Mario
     {
         private float dt;
 
-        private float vSpeed;
-        private float hSpeed;
-
         public float MaxSpeed = 5.2f; // 3.0f
         public float Gravity = 13.4f; // 13.0f
         public float Acceleration = 10.2f; // 2.0f
@@ -29,7 +26,6 @@ namespace Super_Mario
         public float MaxFallSpeed = 20.5f; // 4f
         public float JumpSpeed = -7.1f; // -3.0f
 
-        private Vector2 remainder = new Vector2(0, 0);
 
         SpriteEffects spriteEffect;
 
@@ -165,90 +161,6 @@ namespace Super_Mario
             position.X = Math.Clamp(position.X, 0, Data.WorldW - width);
             position.Y = Math.Clamp(position.Y, 0, Data.WorldH - height * 2f);
 
-        }
-        public void MoveX(float amount, Action onCollide)
-        {
-            Rectangle playerRect = GetBounds();
-
-            remainder.X += amount;
-            int moveX = (int)Math.Round(remainder.X);
-
-            if (moveX != 0)
-            {
-                remainder.X -= moveX;
-                int moveSign = Math.Sign(moveX);
-
-                void MovePlayerX()
-                {
-                    while (moveX != 0)
-                    {
-                        playerRect.X += moveSign;
-
-                        // Test collision against Solids
-                        foreach (Platform solid in GameScene.platforms)
-                        {
-                            Rectangle solidRect = solid.GetBounds();
-
-                            if (CheckCollision(playerRect, solidRect))
-                            {
-                                hSpeed = 0;
-                                onCollide();
-                                return;
-                            }
-                        }
-
-                        // Move the Player
-                        position.X += moveSign;
-                        moveX -= moveSign;
-                    }
-                };
-                MovePlayerX();
-            }
-        }
-        public void MoveY(float amount, Action onCollide)
-        {
-            Rectangle playerRect = GetBounds();
-
-            remainder.Y += amount;
-            int moveY = (int)Math.Round(remainder.Y);
-
-            if (moveY != 0)
-            {
-                remainder.Y -= moveY;
-                int moveSign = Math.Sign(moveY);
-
-                void MovePlayerY()
-                {
-                    while (moveY != 0)
-                    {
-                        playerRect.Y += moveSign;
-
-                        // Test collision against Solids
-                        foreach (Platform solid in GameScene.platforms)
-                        {
-                            Rectangle solidRect = solid.GetBounds();
-
-                            if (CheckCollision(playerRect, solidRect))
-                            {
-                                // Moving down/falling
-                                if (vSpeed > 0.0f)
-                                {
-                                    isGrounded = true;
-                                }
-                                else if (bounds.Bottom > solidRect.Bottom)
-                                    solid.isBouncing = true;
-                                vSpeed = 0;
-                                return;
-                            }
-                        }
-
-                        // Move the Player
-                        position.Y += moveSign;
-                        moveY -= moveSign;
-                    }
-                };
-                MovePlayerY();
-            }
         }
         protected override void OnCollide()
         {

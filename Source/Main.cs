@@ -7,7 +7,7 @@ namespace Super_Mario
 {
     public class Main : Game
     {
-        private static GameStateManager gameStateManager;
+        internal static GameStateManager gameStateManager;
         public static GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 

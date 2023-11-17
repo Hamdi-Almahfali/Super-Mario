@@ -22,7 +22,7 @@ namespace Super_Mario
         public static GameState State { get; set; } = GameState.Menu;
 
         private MenuScene menuScene;
-        private GameScene gameScene;
+        public GameScene gameScene;
         private ScoreScene scoreScene;
         private EditorScene editorScene;
         private WinScene winScene;

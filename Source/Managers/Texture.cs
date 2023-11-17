@@ -13,6 +13,9 @@ namespace Super_Mario
         // Load all game's contents
         public static Texture2D texMario;
         public static Texture2D texPlatform;
+        public static Texture2D texLuckyblock;
+
+        public static Texture2D texGoomba;
 
         public static Texture2D texBackground;
 
@@ -24,7 +27,10 @@ namespace Super_Mario
         {
             texMario = content.Load<Texture2D>(@"Entities\mario");
             texPlatform = content.Load<Texture2D>("tileset");
+            texLuckyblock = content.Load<Texture2D>("luckyblock");
             texBackground = content.Load<Texture2D>("background0");
+
+            texGoomba = content.Load<Texture2D>("goomba");
 
             Font = content.Load<SpriteFont>("Font");
         }
