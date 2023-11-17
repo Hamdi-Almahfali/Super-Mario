@@ -38,13 +38,14 @@ namespace Super_Mario
         }
         public override void Create()
         {
-            hSpeed = Math.Sign(direction.X) * 1;
+            speed = 1;
+            hSpeed = Math.Sign(direction.X) * speed;
         }
         public override void Update(GameTime gameTime)
         {
             AnimationHandler(gameTime);
             HitBehavior();
-            MoveX(hSpeed, null);
+            MoveX(hSpeed, OnCollide);
             MoveY(vSpeed, null);
         }
         public override void Draw(SpriteBatch sb)
@@ -76,6 +77,10 @@ namespace Super_Mario
                         break;
                 }
             }
+        }
+        protected override void OnCollide()
+        {
+            hSpeed = -direction.X * speed;
         }
         private void AnimationHandler(GameTime gameTime)
         {

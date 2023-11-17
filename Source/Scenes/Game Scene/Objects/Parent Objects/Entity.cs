@@ -138,6 +138,8 @@ namespace Super_Mario
                                 vSpeed = 0;
                                 return;
                             }
+                            else
+                                isGrounded = false;
                         }
                         foreach (Enemy enemy in Main.gameStateManager.gameScene.enemies)
                         {
