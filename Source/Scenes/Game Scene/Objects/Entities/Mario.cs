@@ -57,7 +57,6 @@ namespace Super_Mario
             MoveX(hSpeed, OnCollide);
             MoveY(vSpeed, OnCollide);
             base.Update(gameTime);
-            Debug.Print(hSpeed.ToString());
 
         }
         private void AnimationHandler()
@@ -111,6 +110,10 @@ namespace Super_Mario
                 //vSpeed += player.solidSpeed.y;
                 isGrounded = false;
             }
+            if (KeyStatesManager.KeyReleased(Keys.Space) && vSpeed < 0)
+            {
+                vSpeed *= .5f;
+            }
             if (!isGrounded)
             {
                 animState = AnimationState.Jumping;
@@ -155,29 +158,9 @@ namespace Super_Mario
                     hSpeed = Data.Approach(hSpeed, 0, AirDecceleration * dt);
                 }
             }
-            if ((KeyStatesManager.KeyHeld(Keys.A) && !KeyStatesManager.KeyHeld(Keys.D)))
-            {
-                if (isGrounded)
-                {
-                    if (hSpeed > -1)
-                    {
-                        animState = AnimationState.Sliding;
-                    }
-                }
-            }
-            if ((!KeyStatesManager.KeyHeld(Keys.A) && KeyStatesManager.KeyHeld(Keys.D)))
-            {
-                if (isGrounded)
-                {
-                    if (hSpeed < 1)
-                    {
-                        animState = AnimationState.Sliding;
-                    }
-                }
-            }
 
                 // Gravity
-                vSpeed = Data.Approach(vSpeed, MaxFallSpeed, Gravity * dt); 
+            vSpeed = Data.Approach(vSpeed, MaxFallSpeed, Gravity * dt); 
 
             position.X = Math.Clamp(position.X, 0, Data.WorldW - width);
             position.Y = Math.Clamp(position.Y, 0, Data.WorldH - height * 2f);

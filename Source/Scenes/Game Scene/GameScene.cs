@@ -34,6 +34,7 @@ namespace Super_Mario
         }
         internal override void Draw(SpriteBatch spriteBatch)
         {
+            spriteBatch.Draw(Assets.texBackground, new Vector2(0, 10 * Data.TileSize), Color.White);
             foreach (Platform platform in platforms) { platform.Draw(spriteBatch); } // Draw the platforms
             player.Draw(spriteBatch); // Draw player
             player.DrawDebug(spriteBatch); // Draw player

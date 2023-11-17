@@ -13,6 +13,10 @@ static class KeyStatesManager
     {
         return keyState.IsKeyDown(key) && oldKeyState.IsKeyDown(key);
     }
+    public static bool KeyReleased(Keys key)
+    {
+        return keyState.IsKeyUp(key) && oldKeyState.IsKeyDown(key);
+    }
     public static bool LeftClick()
     {
         return mouseState.LeftButton == ButtonState.Pressed &&
