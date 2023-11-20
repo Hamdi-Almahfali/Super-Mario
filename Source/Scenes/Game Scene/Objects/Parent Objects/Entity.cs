@@ -66,7 +66,7 @@ namespace Super_Mario
         }
         public void MoveX(float amount, Action onCollide)
         {
-            Rectangle playerRect = GetBounds();
+            Rectangle playerRect = bounds;
 
             remainder.X += amount;
             int moveX = (int)Math.Round(remainder.X);
@@ -90,7 +90,8 @@ namespace Super_Mario
                             if (CheckCollision(playerRect, solidRect))
                             {
                                 hSpeed = 0;
-                                onCollide();
+                                if (onCollide != null)
+                                    onCollide();
                                 return;
                             }
                         }
@@ -103,7 +104,7 @@ namespace Super_Mario
                 MovePlayerX();
             }
         }
-        public void MoveY(float amount, Action onCollide)
+        public virtual void MoveY(float amount, Action onCollide)
         {
             Rectangle playerRect = GetBounds();
 
@@ -138,8 +139,8 @@ namespace Super_Mario
                                 vSpeed = 0;
                                 return;
                             }
-                            else
-                                isGrounded = false;
+                            //else
+                                //isGrounded = false;
                         }
                         foreach (Enemy enemy in Main.gameStateManager.gameScene.enemies)
                         {

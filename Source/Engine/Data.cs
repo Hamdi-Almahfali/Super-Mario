@@ -10,7 +10,7 @@ namespace Super_Mario
 {
     internal static class Data
     {
-        public static int ScreenW { get; private set; } = 960;
+        public static int ScreenW { get; private set; } = 768;
         public static int ScreenH { get; private set; } = 540;
         public static int WorldW { get; private set; } = 1792;
         public static int WorldH { get; private set; } = 736;
@@ -43,6 +43,22 @@ namespace Super_Mario
             pixel.SetData(new[] { Color.White });
 
             spriteBatch.Draw(pixel, rectangle, Color.Yellow);
+        }
+        public static Color HexToColor(string hex)
+        {
+            hex = hex.Replace("#", "");
+            byte r = byte.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+            byte g = byte.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+            byte b = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+
+            // Check if the hex string includes alpha (transparency) information
+            byte a = 255; // Default alpha value
+            if (hex.Length == 8)
+            {
+                a = byte.Parse(hex.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
+            }
+
+            return new Color(r, g, b, a);
         }
     }
 }

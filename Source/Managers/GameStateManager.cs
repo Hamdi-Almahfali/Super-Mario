@@ -33,7 +33,7 @@ namespace Super_Mario
         internal override void LoadContent(ContentManager content)
         {
             this.content = content;
-            ChangeLevel(GameState.Game);
+            ChangeLevel(GameState.Menu);
         }
 
         internal override void Update(GameTime gameTime)
@@ -66,8 +66,11 @@ namespace Super_Mario
                     spriteBatch.End();
                     break;
                 case GameState.Game:
-                    spriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, gameScene.camera.Transform);
+                    spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, gameScene.camera.Transform);
                     gameScene.Draw(spriteBatch);
+                    spriteBatch.End();
+                    spriteBatch.Begin();
+                    gameScene.DrawGUI(spriteBatch);
                     spriteBatch.End();
                     break;
                 case GameState.Settings:

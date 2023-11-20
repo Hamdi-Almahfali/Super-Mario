@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Super_Mario
 {
@@ -10,6 +11,9 @@ namespace Super_Mario
         internal static GameStateManager gameStateManager;
         public static GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
+        public GameWindow gameWindow;
+
+        public static float dt;
 
         public Main()
         {
@@ -20,6 +24,11 @@ namespace Super_Mario
 
         protected override void Initialize()
         {
+            // Fixed time step
+            TargetElapsedTime = TimeSpan.FromSeconds(1.0 / 60.0f);
+            IsFixedTimeStep = true;
+
+
             // SET SCREEN SIZE
             Data.SetScreenSize(graphics);
 
@@ -34,10 +43,13 @@ namespace Super_Mario
             spriteBatch = new SpriteBatch(GraphicsDevice);
             Assets.LoadTextures(Content);
             gameStateManager.LoadContent(Content);
+
+            graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointClamp;
         }
 
         protected override void Update(GameTime gameTime)
         {
+            dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
             gameStateManager.Update(gameTime);
 
             base.Update(gameTime);
@@ -45,7 +57,10 @@ namespace Super_Mario
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            string hexColorCode = "#7892e0";
+            Color color = Data.HexToColor(hexColorCode);
+
+            GraphicsDevice.Clear(color);
 
             //spriteBatch.Begin();
             //spriteBatch.End();

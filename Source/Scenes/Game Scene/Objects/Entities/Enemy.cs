@@ -31,6 +31,8 @@ namespace Super_Mario
         public bool hit { get; private set; }
         CustomTimer hitTimer;
 
+        SpriteEffects spriteEffect;
+
         public Enemy(Rectangle bounds, Texture2D texture, int index) : base(bounds, texture)
         {
             enemyType = (EnemyType)index;
@@ -43,15 +45,28 @@ namespace Super_Mario
         }
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             AnimationHandler(gameTime);
             HitBehavior();
             MoveX(hSpeed, OnCollide);
             MoveY(vSpeed, null);
+
+            if (hSpeed > 0)
+            {
+                spriteEffect = SpriteEffects.None;
+                direction.X = 1;
+            }
+            if (hSpeed < 0)
+            {
+                spriteEffect = SpriteEffects.FlipHorizontally;
+                direction.X = -1;
+
+            }
         }
         public override void Draw(SpriteBatch sb)
         {
             Rectangle rect = new Rectangle(frame * Data.TileSize, 0, Data.TileSize, Data.TileSize);
-            sb.Draw(texture, position, rect, Color.White);
+            sb.Draw(texture, position, rect, Color.White, 0, Vector2.Zero, 1f, spriteEffect, 0);
         }
         public void HitEnemy()
         {
@@ -89,10 +104,10 @@ namespace Super_Mario
                 switch (enemyState)
                 {
                     case EnemyState.Walking:
-                        UpdateFrames(gameTime, frameInterval + 0.1f, 1);
+                        UpdateFrames(gameTime, frameInterval - 0.05f, 7);
                         break;
                     case EnemyState.Dead:
-                        frame = 2;
+                        frame = 8;
                         break;
                 }
             }

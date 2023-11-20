@@ -13,6 +13,7 @@ namespace Super_Mario
         private Matrix transform;  //håller en transformation från position i spelvärden till position i fönstret. 
         private Vector2 position;  //spelarens position
         private Viewport view;
+        private Rectangle bounds;
 
         public Matrix Transform
         {
@@ -21,6 +22,16 @@ namespace Super_Mario
         public Camera(Viewport view)
         {
             this.view = view;
+        }
+        public Rectangle Bounds
+        {
+            get
+            {
+                int x = (int)(-position.X + view.Width / 2);
+                int y = (int)(-position.Y + view.Height / 2);
+
+                return new Rectangle(x, y, Data.ScreenW, Data.ScreenH);
+            }
         }
         public void SetPosition(Vector2 position)
         {

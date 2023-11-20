@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
 
 namespace Super_Mario
 {
-    public class PlatformData
+    internal class ScoreManager
     {
-        public Rectangle rect;
-        public int type;
-        public int prize;
+        public int score;
+        public int coins;
+        public string world = "1-1";
     }
 }

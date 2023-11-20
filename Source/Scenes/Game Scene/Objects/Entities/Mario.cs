@@ -14,7 +14,12 @@ namespace Super_Mario
 {
     internal class Mario : Entity
     {
-        private float dt;
+        enum MarioType
+        {
+            Default,
+            Shooter,
+        }
+        MarioType marioType; // All mario states
 
         public float MaxSpeed = 5.2f; // 3.0f
         public float Gravity = 13.4f; // 13.0f
@@ -26,10 +31,15 @@ namespace Super_Mario
         public float MaxFallSpeed = 20.5f; // 4f
         public float JumpSpeed = -7.1f; // -3.0f
 
+        private float dt; // Delta time
 
-        SpriteEffects spriteEffect;
+        private SpriteEffects spriteEffect; // Sprite effect for mirroring image
+        public CustomTimer superStarTimer { get; private set; } // Timer for mario ability
+        private Controller controller; // Debug controller for showing stats in debug mode
 
-        private Controller controller;
+        private List<Fireball> fireballs;
+        private int shootDelay = 5;
+        private float canShoot = 0.0f;
 
         public Mario(Rectangle bounds, Texture2D texture) : base(bounds, texture)
         {
@@ -41,6 +51,9 @@ namespace Super_Mario
             vSpeed = 0f;
             hSpeed = 0f;
             isGrounded = false;
+
+            fireballs = new();
+            marioType = MarioType.Shooter;
         }
         public override void Update(GameTime gameTime)
         {
@@ -52,8 +65,28 @@ namespace Super_Mario
             Movement();
             MoveX(hSpeed, OnCollide);
             MoveY(vSpeed, OnCollide);
+            ShootingBehavior(gameTime);
             base.Update(gameTime);
 
+        }
+        private void ShootingBehavior(GameTime gt)
+        {
+            if (marioType != MarioType.Shooter) return;
+            if (KeyStatesManager.KeyPressed(Keys.LeftShift) && canShoot == 0.0f)
+            {
+                Fireball fireball = new Fireball(this.GetBounds(), Assets.texFireball, new Vector2(direction.X,0));
+                fireball.Create(position);
+                fireballs.Add(fireball);
+                canShoot = shootDelay;
+            }
+            if (canShoot > 0)
+            {
+                canShoot -= 0.1f;
+            }
+            else
+                canShoot = 0;
+
+            foreach (Fireball fb in fireballs) { fb.Update(gt); }
         }
         private void AnimationHandler()
         {
@@ -69,14 +102,14 @@ namespace Super_Mario
                     {
                         frameTimer = frameInterval;
                         frame++;
-                        if (frame > 3)
+                        if (frame > 5)
                         {
                             frame = 1;
                         }
                     }
                     break;
                 case 2:
-                    frame = 5;
+                    frame = 6;
                     break;
                 case 3:
                     frame = 4;
@@ -89,10 +122,12 @@ namespace Super_Mario
             if (hSpeed > 0)
             {
                 spriteEffect = SpriteEffects.None;
+                direction.X = 1;
             }
             if (hSpeed < 0)
             {
                 spriteEffect = SpriteEffects.FlipHorizontally;
+                direction.X = -1;
 
             }
         }
@@ -155,7 +190,7 @@ namespace Super_Mario
                 }
             }
 
-                // Gravity
+            // Gravity
             vSpeed = Data.Approach(vSpeed, MaxFallSpeed, Gravity * dt); 
 
             position.X = Math.Clamp(position.X, 0, Data.WorldW - width);
@@ -168,7 +203,8 @@ namespace Super_Mario
         }
         public override void Draw(SpriteBatch sb)
         {
-            sb.Draw(texture, position, new Rectangle(frame * Data.TileSize, 0, Data.TileSize, Data.TileSize), Color.White, 0, Vector2.Zero, 1f, spriteEffect, 0);
+            sb.Draw(texture, new Vector2(position.X, position.Y - (texture.Height / 2 - Data.TileSize)), new Rectangle(frame * Data.TileSize, 0, Data.TileSize, 40), Color.White, 0, Vector2.Zero, 1f, spriteEffect, 0);
+            foreach(Fireball fb in fireballs) { fb.Draw(sb); }
         }
         public void DrawDebug(SpriteBatch sb)
         {

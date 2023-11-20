@@ -5,6 +5,7 @@ static class KeyStatesManager
 {
     public static KeyboardState keyState, oldKeyState = Keyboard.GetState();
     public static MouseState mouseState, oldMouseState = Mouse.GetState();
+
     public static bool KeyPressed(Keys key)
     {
         return keyState.IsKeyDown(key) && oldKeyState.IsKeyUp(key);

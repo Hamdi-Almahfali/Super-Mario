@@ -12,16 +12,20 @@ namespace Super_Mario
 {
     internal class MenuScene : Component
     {
+        MenuHUD hud;
 
         internal override void LoadContent(ContentManager content)
         {
+            hud = new();
         }
 
         internal override void Update(GameTime gameTime)
         {
+            hud.Update(gameTime);
         }
         internal override void Draw(SpriteBatch spriteBatch)
         {
+            hud.Draw(spriteBatch);
         }
     }
 }

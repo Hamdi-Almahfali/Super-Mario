@@ -60,6 +60,10 @@ namespace Super_Mario
         {
             return -1;
         }
+        public virtual int GetPlatformPrize()
+        {
+            return -1;
+        }
         public Vector2 GetPosition()
         {
             return position;

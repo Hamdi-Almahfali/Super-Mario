@@ -49,11 +49,13 @@ namespace Super_Mario
                 JObject obj = (JObject)arrayObj[i];
                 Rectangle rect = GetRectangle(obj);
                 int type = GetType(obj);
+                int prize = GetPrize(obj);
 
                 PlatformData platformData = new PlatformData
                 {
                     rect = rect,
-                    type = type
+                    type = type,
+                    prize = prize
                 };
 
                 platformDataList.Add(platformData);
@@ -92,6 +94,10 @@ namespace Super_Mario
         {
             return obj.Value<int>("type");
         }
+        private static int GetPrize(JObject obj)
+        {
+            return obj.Value<int>("prize");
+        }
         public static void WriteJsonToFile(string filename,
         List<GameObject> gList)
         {
@@ -108,7 +114,7 @@ namespace Super_Mario
                 }
                 else if (gList[i] is Platform)
                 {
-                    JObject obj = CreateObject(gList[i].GetBounds(), gList[i].GetPlatformType());
+                    JObject obj = CreateObject(gList[i].GetBounds(), gList[i].GetPlatformType(), gList[i].GetPlatformPrize());
                     platformArray.Add(obj);
                 }
                 else if (gList[i] is Mario)
@@ -131,7 +137,7 @@ namespace Super_Mario
             obj.Add("width", rect.Width);
             return obj;
         }
-        private static JObject CreateObject(Rectangle rect, int type)
+        private static JObject CreateObject(Rectangle rect, int type, int prize)
         {
             JObject obj = new JObject();
             obj.Add("positionX", rect.X);
@@ -139,6 +145,7 @@ namespace Super_Mario
             obj.Add("height", rect.Height);
             obj.Add("width", rect.Width);
             obj.Add("type", type);
+            obj.Add("prize", prize);
             return obj;
         }
     }
